@@ -1,7 +1,8 @@
 from PIL import Image
 from flask import Flask, render_template, request
-from scripts.Recommendation import *
+from scripts.Recommendation import get_recommendations
 import cv2
+import numpy as np
 
 app = Flask(__name__)
 
@@ -23,11 +24,13 @@ def detect():
         img1 = cv2.imdecode(np.frombuffer(request.files['image'].read(), np.uint8), cv2.IMREAD_UNCHANGED)
         img = cv2.resize(img1,  (224, 224), interpolation = cv2.INTER_AREA)
         rgbimg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        floatimg = rgbimg.astype("float32") / 255.0
-        image = np.transpose(floatimg, (2, 0, 1))
-        image = np.expand_dims(image, 0)
+        # floatimg = rgbimg.astype("float32") / 255.0
+        # image = np.transpose(floatimg, (2, 0, 1))
+        # image = np.expand_dims(image, 0)
+        img = Image.fromarray(rgbimg, 'RGB')
+        img.save("test_image.jpg")
         # get_similar_images([], image)
-        get_recommendations(image)
+        get_recommendations()
 
 
     except Exception as e:
